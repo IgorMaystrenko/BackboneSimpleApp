@@ -1,5 +1,6 @@
 ﻿using BackboneSimpleApp.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Results;
 
@@ -18,9 +19,9 @@ namespace BackboneSimpleApp.Controllers
         };
 
         // GET api/Contacts
-        public JsonResult<List<Contact>>  GetContacts()
+        public IEnumerable<Contact>  GetContacts()
         {
-            return Json(contacts);
+            return contacts;
         }
 
         //// GET api/Contacts/5
