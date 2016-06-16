@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Description;
 using System.Web.Http.Results;
 
 namespace BackboneSimpleApp.Controllers
@@ -32,16 +33,17 @@ namespace BackboneSimpleApp.Controllers
         //}
 
         //// PUT api/Contacts/5
-        //public IHttpActionResult PutContact(int id, Contact contact)
-        //{
-        //   }
+        public IHttpActionResult PutContact(int id, Contact contact)
+        {
+            return Ok();
+        }
 
-        //// POST api/Contacts
-        //[ResponseType(typeof(Contact))]
-        //public IHttpActionResult PostContact(Contact contact)
-        //{
-            
-        //}
+        // POST api/Contacts
+        [ResponseType(typeof(Contact))]
+        public IHttpActionResult PostContact(Contact contact)
+        {
+            return Ok();
+        }
 
         //// DELETE api/Contacts/5
         //[ResponseType(typeof(Contact))]

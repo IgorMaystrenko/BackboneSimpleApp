@@ -7,6 +7,13 @@
 <div id="app">
     <div id="contact-list">
     </div>
+
+    <div id="add-contact-container">
+        <h1>Add new contact</h1>
+        <input type="text" id="new-contact-name"/>
+        <input type="text" id="new-contact-phone" />
+        <input type="button" id="add-new-contact" value="Add new contact"/>
+    </div>
 </div>
 
     <script src="~/Scripts/json2.js"></script>
@@ -18,18 +25,11 @@
     $(function() {
 
         var Contact = Backbone.Model.extend({
-            initialize: function() {
-			},
-            clear: function () {
-                this.destroy();
-            }
         });
 
         var ContactList = Backbone.Collection.extend({
             model: Contact,
-            url: function () {
-                return '../api/contacts';
-            }
+            url: '../api/contacts'
         });
 
         var contactList = new ContactList();
@@ -45,6 +45,14 @@
         var AppView = Backbone.View.extend({
             el: '#app',
             initialize: function () {
+                $('#add-new-contact').click(function() {
+                    contactList.create({
+                        Id: 0,
+                        Name: $('#new-contact-name').val(),
+                        Phone: $('#new-contact-phone').val()
+                    });
+                });
+
                 contactList.on('add', this.addOne, this);
                 contactList.on('reset', this.addAll, this);
                 contactList.fetch(); // Loads list from local storage
