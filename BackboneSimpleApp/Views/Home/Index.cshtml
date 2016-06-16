@@ -2,6 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title></title>
+    <style>
+        #todo-list input.edit {
+            display: none; /* Hides input box*/
+        }
+
+        #todo-list .editing label {
+            display: none; /* Hides label text when .editing*/
+        }
+
+        #todo-list .editing input.edit {
+            display: inline; /* Shows input text box when .editing*/
+        }
+    </style>
 </head>
 <body>
 <div id="app">
@@ -25,6 +38,7 @@
     $(function() {
 
         var Contact = Backbone.Model.extend({
+            url: '../api/contacts'
         });
 
         var ContactList = Backbone.Collection.extend({
@@ -36,6 +50,7 @@
 
         var ContactItemView = Backbone.View.extend({
             template: _.template($('#item-template').html()),
+            url: '../api/contacts',
             initialize: function() {
                 this.model.on('destroy', this.remove, this);
             },
@@ -46,7 +61,7 @@
                 this.$el.html(this.template(this.model.toJSON()));
                 return this;
             },
-            destroy: function(){
+            destroy: function() {
                 this.model.destroy();
             }
         });
@@ -56,9 +71,9 @@
             initialize: function () {
                 $('#add-new-contact').click(function() {
                     contactList.create({
-                        Id: 0,
-                        Name: $('#new-contact-name').val(),
-                        Phone: $('#new-contact-phone').val()
+                        id: 0,
+                        name: $('#new-contact-name').val(),
+                        phone: $('#new-contact-phone').val()
                     });
                 });
 
@@ -93,9 +108,9 @@
 
 <script type="text/template" id="item-template">
     <div class="view">
-        <label><%- Id %> | </label>
-        <label><%- Name %> | </label>
-        <label><%- Phone %></label>
+        <label><%- id %> | </label>
+        <label><%- name %> | </label>
+        <label><%- phone %></label>
         <button class="destroy">remove</button>
     </div>
 </script>

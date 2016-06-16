@@ -20,6 +20,7 @@ namespace BackboneSimpleApp.Controllers
         };
 
         // GET api/Contacts
+        [AcceptVerbs("GET")]
         public IEnumerable<Contact>  GetContacts()
         {
             return contacts;
@@ -33,6 +34,7 @@ namespace BackboneSimpleApp.Controllers
         //}
 
         //// PUT api/Contacts/5
+        [AcceptVerbs("PUT")]
         public IHttpActionResult PutContact(int id, Contact contact)
         {
             return Ok();
@@ -40,6 +42,7 @@ namespace BackboneSimpleApp.Controllers
 
         // POST api/Contacts
         [ResponseType(typeof(Contact))]
+        [AcceptVerbs("POST")]
         public IHttpActionResult PostContact(Contact contact)
         {
             return Ok();
@@ -47,6 +50,7 @@ namespace BackboneSimpleApp.Controllers
 
         // DELETE api/Contacts/5
         [ResponseType(typeof(Contact))]
+        [AcceptVerbs("DELETE")]
         public IHttpActionResult DeleteContact(int id)
         {
             return Ok();
