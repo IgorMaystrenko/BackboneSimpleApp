@@ -45,12 +45,12 @@ namespace BackboneSimpleApp.Controllers
             return Ok();
         }
 
-        //// DELETE api/Contacts/5
-        //[ResponseType(typeof(Contact))]
-        //public IHttpActionResult DeleteContact(int id)
-        //{
-            
-        //}
+        // DELETE api/Contacts/5
+        [ResponseType(typeof(Contact))]
+        public IHttpActionResult DeleteContact(int id)
+        {
+            return Ok();
+        }
 
 
     }

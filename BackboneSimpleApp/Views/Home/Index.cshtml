@@ -36,9 +36,18 @@
 
         var ContactItemView = Backbone.View.extend({
             template: _.template($('#item-template').html()),
+            initialize: function() {
+                this.model.on('destroy', this.remove, this);
+            },
+            events: {
+                'click .destroy': 'destroy'
+            },
             render: function() {
                 this.$el.html(this.template(this.model.toJSON()));
                 return this;
+            },
+            destroy: function(){
+                this.model.destroy();
             }
         });
 
@@ -87,6 +96,7 @@
         <label><%- Id %> | </label>
         <label><%- Name %> | </label>
         <label><%- Phone %></label>
+        <button class="destroy">remove</button>
     </div>
 </script>
 </body>
