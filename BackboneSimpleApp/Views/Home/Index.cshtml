@@ -4,72 +4,66 @@
     <title></title>
 </head>
 <body>
-<div id="container">
-    <ul id="contact-list"></ul>
+<div id="app">
+    <div id="contact-list">
+    </div>
 </div>
 
     <script src="~/Scripts/json2.js"></script>
     <script src="~/Scripts/jquery-1.7.1.js"></script>
     <script src="~/Scripts/underscore.js"></script>
     <script src="~/Scripts/backbone.js"></script>
-<script>
+<script type="text/javascript">
+
     $(function() {
+
         var Contact = Backbone.Model.extend({
             initialize: function() {
-            },
-            clear: function() {
+			},
+            clear: function () {
                 this.destroy();
             }
         });
 
         var ContactList = Backbone.Collection.extend({
             model: Contact,
-            url: function() {
+            url: function () {
                 return '../api/contacts';
-            },
+            }
         });
 
         var contactList = new ContactList();
 
-        var ContactView = Backbone.View.extend({
-            tagName: 'li',
+        var ContactItemView = Backbone.View.extend({
             template: _.template($('#item-template').html()),
-            render: function () {
+            render: function() {
                 this.$el.html(this.template(this.model.toJSON()));
-                return this; // enable chained calls
+                return this;
             }
         });
-        
+
         var AppView = Backbone.View.extend({
-            el: '#container',
+            el: '#app',
             initialize: function () {
-                // when new elements are added to the collection render then with addOne
                 contactList.on('add', this.addOne, this);
                 contactList.on('reset', this.addAll, this);
                 contactList.fetch(); // Loads list from local storage
             },
-            //events: {
-            //    'keypress #new-todo': 'createTodoOnEnter'
-            //},
-            //createTodoOnEnter: function (e) {
-            //    if (e.which !== 13 || !this.input.val().trim()) { // ENTER_KEY = 13
-            //        return;
-            //    }
-            //    app.todoList.create(this.newAttributes());
-            //    this.input.val(''); // clean input box
-            //},
             addOne: function (contact) {
-                var view = new ContactView({ model: contact });
+                var view = new ContactItemView({ model: contact });
                 $('#contact-list').append(view.render().el);
             },
             addAll: function () {
                 this.$('#contact-list').html(''); // clean the todo list
                 contactList.each(this.addOne, this);
             },
-            newAttributes: function () {
-                return {
-                    title: this.input.val().trim(),
-                    completed: false
+            render: function () {
+                $("#contact-list").html("");
+                if (this.model.length) {
+                    for (var i = 0; i < this.model.length; i++) {
+                        var view = new ContactItemView({ model: this.model.at(i) });
+                        $("#contact-list").append(view.render().el);
+                    }
                 }
             }
         });
@@ -78,30 +72,14 @@
 
     });
 
-    //$(document).ready(function () {
-    //    // Send an AJAX request
-    //    $.getJSON(uri)
-    //        .done(function (data) {
-    //            // On success, 'data' contains a list of products.
-    //            $.each(data, function (key, item) {
-    //                // Add a list item for the product.
-    //                $('<li>', { text: formatItem(item) }).appendTo($('body'));
-    //            });
-    //        });
-    //});
-
-    //function formatItem(item) {
-    //    return item.Name + ': ' + item.Phone;
-    //}
-
 </script>
 
-    <script type="text/template" id="item-template">
-        <div class="view">
-            <label><%- Id %></label>
-            <label><%- Name %></label>
-            <label><%- Phone %></label>
-        </div>
-    </script>
+<script type="text/template" id="item-template">
+    <div class="view">
+        <label><%- Id %> | </label>
+        <label><%- Name %> | </label>
+        <label><%- Phone %></label>
+    </div>
+</script>
 </body>
 </html>
