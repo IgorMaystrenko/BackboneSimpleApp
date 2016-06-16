@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Web.Http.Results;
 
 namespace BackboneSimpleApp.Controllers
 {
@@ -26,25 +25,31 @@ namespace BackboneSimpleApp.Controllers
             return contacts;
         }
 
-        //// GET api/Contacts/5
-        //[ResponseType(typeof(Contact))]
-        //public IHttpActionResult GetContact(int id)
-        //{
-            
-        //}
-
         //// PUT api/Contacts/5
         [AcceptVerbs("PUT")]
         public IHttpActionResult PutContact(int id, Contact contact)
         {
-            return Ok();
-        }
+            if (id <= 0)
+            {
+                // New element. Add random id and save it.
+                contact.Id = contacts.Max(c => c.Id) + 1;
+                contacts.Add(contact);
 
-        // POST api/Contacts
-        [ResponseType(typeof(Contact))]
-        [AcceptVerbs("POST")]
-        public IHttpActionResult PostContact(Contact contact)
-        {
+                return Ok(contact.Id);
+            }
+
+            // This element must be in collection.
+            var oldContact = contacts.FirstOrDefault(c => c.Id == id);
+
+            if (oldContact == null)
+            {
+                // There is no such element with this id
+                return BadRequest("There is no such element with this id.");
+            }
+
+            oldContact.Name = contact.Name;
+            oldContact.Phone = contact.Phone;
+
             return Ok();
         }
 
@@ -53,6 +58,21 @@ namespace BackboneSimpleApp.Controllers
         [AcceptVerbs("DELETE")]
         public IHttpActionResult DeleteContact(int id)
         {
+            if (id <= 0)
+            {
+                return BadRequest("Wrong Id");
+            }
+
+            var contactToRemove = contacts.FirstOrDefault(c => c.Id == id);
+
+            if (contactToRemove == null)
+            {
+                // There is no such element
+                return BadRequest(string.Format("There is no element with this id = {0}", id));
+            }
+
+            contacts.Remove(contactToRemove);
+
             return Ok();
         }
 

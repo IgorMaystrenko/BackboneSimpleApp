@@ -3,15 +3,15 @@
 <head>
     <title></title>
     <style>
-        #todo-list input.edit {
+        #contact-list input.edit, #contact-list .save, #contact-list .cancel-save {
             display: none; /* Hides input box*/
         }
 
-        #todo-list .editing label {
+        #contact-list .editing label, #contact-list .editing .edit-button {
             display: none; /* Hides label text when .editing*/
         }
 
-        #todo-list .editing input.edit {
+        #contact-list .editing input.edit, #contact-list .editing .save, #contact-list .editing .cancel-save {
             display: inline; /* Shows input text box when .editing*/
         }
     </style>
@@ -38,7 +38,12 @@
     $(function() {
 
         var Contact = Backbone.Model.extend({
-            url: '../api/contacts'
+            defaults: {
+                id: -1,
+                name: "",
+                phone: ""
+            },
+            urlRoot: '../api/contacts'
         });
 
         var ContactList = Backbone.Collection.extend({
@@ -50,12 +55,18 @@
 
         var ContactItemView = Backbone.View.extend({
             template: _.template($('#item-template').html()),
-            url: '../api/contacts',
-            initialize: function() {
+            urlRoot: '../api/contacts',
+            initialize: function () {
+                this.nameInput = this.$el.find('.edit-name');
+                this.phoneInput = this.$el.find('.edit-phone');
+                this.model.on('change', this.render, this);
                 this.model.on('destroy', this.remove, this);
             },
             events: {
-                'click .destroy': 'destroy'
+                'click .edit-button': 'edit',
+                'click .destroy': 'destroy',
+                'click .save' : 'save',
+                'click .cancel-save' : 'cancel'
             },
             render: function() {
                 this.$el.html(this.template(this.model.toJSON()));
@@ -63,6 +74,21 @@
             },
             destroy: function() {
                 this.model.destroy();
+            },
+            edit: function() {
+                this.$el.addClass('editing');
+            },
+            save: function () {
+                var newName = this.$el.find('.edit-name').val().trim();
+                var newPhone = this.$el.find('.edit-phone').val().trim();
+                if (newName && newPhone) {
+                    this.model.save({ 'name': newName, 'phone': newPhone });
+                }
+
+                this.$el.removeClass('editing');
+            },
+            cancel: function() {
+                this.$el.removeClass('editing');
             }
         });
 
@@ -71,9 +97,14 @@
             initialize: function () {
                 $('#add-new-contact').click(function() {
                     contactList.create({
-                        id: 0,
                         name: $('#new-contact-name').val(),
                         phone: $('#new-contact-phone').val()
+                    }, {
+                        success: function (model, response) {
+                            if (!isNaN(parseInt(response))) {
+                                model.set({ id: response });
+                            }
+                        }
                     });
                 });
 
@@ -110,7 +141,12 @@
     <div class="view">
         <label><%- id %> | </label>
         <label><%- name %> | </label>
+        <input class="edit edit-name" value="<%- name %>">
         <label><%- phone %></label>
+        <input class="edit edit-phone" value="<%- phone %>">   
+        <button class="edit-button">edit</button>
+        <button class="save">save</button>
+        <button class="cancel-save">cancel</button>
         <button class="destroy">remove</button>
     </div>
 </script>
